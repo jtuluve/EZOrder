@@ -13,7 +13,7 @@ import { Kitchen } from "./pages/Kitchen";
 import { OrderProvider } from "./contexts/OrderContext";
 
 // export const BACKEND_URL = "http://localhost:9000";
-export const BACKEND_URL = "https://ezorder.onrender.com";
+export const BACKEND_URL = "https://ezorder-ciy0.onrender.com";
 
 const App: React.FC = () => {
   return (
