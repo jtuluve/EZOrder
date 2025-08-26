@@ -32,3 +32,7 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/ezorder-backend:latest
             ${{ secrets.DOCKER_USERNAME }}/ezorder-backend:${{ github.sha }}
+            
+      - name: Redeploy backend
+        run: |
+          curl -X POST ${{ secrets.DEPLOY_HOOK }}
