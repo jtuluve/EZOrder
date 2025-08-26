@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import Items from "../models/itemModel";
 import Orders from "../models/orderModel";
 import Item_t from "../types/items";
