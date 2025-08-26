@@ -2,11 +2,12 @@ import { Router } from "express";
 import { populateItems } from "../init/populateDb";
 import dbUtil from "../database/dbUtils";
 import Items_t from "../types/items";
+import { getOrSetCache } from "../redis/utils";
 const router = Router();
 
 router.get("/", async (_, res) => {
   try {
-    const allItems: Items_t[] = await dbUtil.getAllItems();
+    const allItems: Items_t[] = await getOrSetCache("items", dbUtil.getAllItems) as Items_t[];
     res.status(200).send({ success: true, msg: "Items data", data: allItems });
   } catch (e) {
     if (e instanceof Error)
@@ -52,7 +53,7 @@ router.get("/populate", async (_, res) => {
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const item: Items_t = await dbUtil.getItem(id);
+    const item: Items_t = await getOrSetCache(`item:${id}`, () => dbUtil.getItem(id)) as Items_t;
     res.status(200).send({ success: true, msg: "Item found", data: item });
   } catch (e) {
     if (e instanceof Error)

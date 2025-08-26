@@ -7,10 +7,12 @@ import cors from "cors";
 //route
 import itemRouter from "./routes/ItemRoute";
 import orderRouter from "./routes/orderRoute";
+import { connectRedis } from "./redis/utils";
 
 // Connecting mongodb and then creating a websocket
 db.connectMongoDb(process.env.MONGODB_URL as string)
   .then(() => db.wsInitializer())
+  .then(() => connectRedis())
   .catch((e) => console.error("Failed to connect to MongoDB:", e));
 
 app.use(

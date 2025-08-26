@@ -2,11 +2,12 @@ import { Router } from "express";
 import { Orders_t, OrderedItem_t } from "../types/orders";
 import dbUtil from "../database/dbUtils";
 import AppError from "../types/AppError";
+import { getOrSetCache } from "../redis/utils";
 const router = Router();
 
 router.get("/", async (_, res) => {
   try {
-    const AllOrders: Orders_t[] = await dbUtil.getAllOrders();
+    const AllOrders: Orders_t[] = await getOrSetCache("orders", dbUtil.getAllOrders) as Orders_t[];
     res
       .status(200)
       .send({ success: true, msg: "Orders found", data: AllOrders });
@@ -22,7 +23,7 @@ router.get("/", async (_, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const order: Orders_t = await dbUtil.getOrder(req.params as Orders_t);
+    const order: Orders_t = await getOrSetCache(`order:${req.params.id}`, () => dbUtil.getOrder(req.params as Orders_t)) as Orders_t;
     res.status(200).send({ success: true, msg: "Order found", data: order });
   } catch (e) {
     if (e instanceof AppError)
