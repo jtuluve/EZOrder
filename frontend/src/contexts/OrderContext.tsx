@@ -27,6 +27,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
   const [qrImage, setQrImage] = useState<string>();
   const [orderId, setOrderId] = useState<string>("");
   const [orderNumber, setOrderNumber] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const storedOrder = localStorage.getItem("order");
@@ -42,6 +43,12 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         QRCode.toDataURL(parsedOrder.orderId).then(setQrImage);
       }
     }
+
+    const storedCurrentOrder = localStorage.getItem("currentOrderItems");
+    if (storedCurrentOrder) {
+      setCurrentOrder(JSON.parse(storedCurrentOrder));
+    }
+    setLoading(false);
   }, []);
 
   // const confirmRefresh = () => {
@@ -143,6 +150,11 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  useEffect(() => {
+    if(loading) return;
+    localStorage.setItem("currentOrderItems", JSON.stringify(currentOrder));
+  }, [currentOrder, loading]);
+
   return (
     <OrderContext.Provider
       value={{
@@ -160,7 +172,8 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         setOrderNumber,
         orderId,
         // confirmRefresh,
-      }}>
+      }}
+    >
       {children}
     </OrderContext.Provider>
   );
